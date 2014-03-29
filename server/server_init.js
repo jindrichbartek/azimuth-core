@@ -69,7 +69,28 @@ Meteor.startup(function () {
     },
     usersExist: function() {
       return Meteor.users.find().count() > 0;
-    }
+    },
+    
+
+	//custom CODE
+	updateAllNavsTitle: function(page_url, page_title) {
+
+	    var navIDs = [];
+
+	    Navigation.find().forEach(function(nav) {
+		nav.pages.forEach(function(page) {
+		    if (page.url === page_url)
+			navIDs.push(nav._id);
+		});
+	    });
+	    //console.log(JSON.stringify(navIDs));
+
+	    Navigation.update({_id: { $in : navIDs}, 'pages.url': page_url}, {$set: {'pages.$.title': page_title}},
+		    { multi: true });
+	    
+
+
+	}
   });
 
   // Pages
